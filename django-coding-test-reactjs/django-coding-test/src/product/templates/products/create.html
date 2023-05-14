@@ -15,7 +15,7 @@
     </script>
 
     <div id="root">
-        <CreateProduct id="variants" data-variants="{{ variants|safe }}"></CreateProduct>
+        <CreateProduct csrf = {{ csrf_token }} id="variants" data-variants="{{ variants|safe }}"></CreateProduct>
     </div>
 
 {% endblock %}

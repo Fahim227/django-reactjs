@@ -7,9 +7,49 @@ from product.models import *
 from django.db.models import Sum,Count
 from django.views.decorators.csrf import requires_csrf_token,ensure_csrf_cookie
 from django.utils.decorators import method_decorator
+from django.http import HttpResponse
+import json
+
+
+def createProduct(request):
+    print(request.method)
+    print("createProduct=======")
+    response_data= {}
+    response_data['isSuccess'] = True
+    response_data['message'] = 'Success'
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+
 
 class CreateProductView(generic.TemplateView):
     template_name = 'products/create.html'
+
+    # @method_decorator(ensure_csrf_cookie)
+    def post(self, request, *args, **kwargs):
+        body = self.request.body
+        # {"pName":"pName","pSku":"pSKU","pDesc":"Desc","pVariants":[{"option":1,"tags":["Tags"]}]}
+        body = json.loads(body)
+        print(body)
+        productName = body['pName']
+        productSku = body['pSku']
+        productDescription = body['pDesc']
+        product = Product.objects.create(title = productName,sku=productSku,description = productDescription)
+        
+        pVariants_list = body['pVariants']
+        for variant in pVariants_list:
+            if variant["option"] == 1:
+                variant_title = "Size"
+                variant_obj = Variant.objects.get(title = variant_title)
+                for tag in variant["tags"]:
+                    pVariant = ProductVariant.objects.create(variant_title = tag,variant = variant_obj,product=product)
+                    # Here i did not able to run vue project and in react i was not able to
+                    # to send tags wth ptice and stock 
+                    # if i can get all the data i would create an new data in ProductVariantPrice here
+        response_data= {}
+        response_data['isSuccess'] = True
+        response_data['message'] = 'Success'
+        return HttpResponse(json.dumps(response_data), content_type="application/json")
+
 
     def get_context_data(self, **kwargs):
         context = super(CreateProductView, self).get_context_data(**kwargs)
@@ -91,6 +131,9 @@ class GetAllProducts(TemplateView):
                             all_variants.append(variant_dict)
             if len(all_variants) != 0:
                 data["all_variants"] = all_variants
+                all_products.append(data)
+            else:
+                data['product'] = product
                 all_products.append(data)
         all_variant = Variant.objects.all()
         drpdown_variant_list = []

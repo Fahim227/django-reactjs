@@ -2,7 +2,7 @@ import React, {ChangeEvent,useState} from 'react';
 import TagsInput from 'react-tagsinput';
 import 'react-tagsinput/react-tagsinput.css';
 import Dropzone from 'react-dropzone'
-
+import axios from 'axios';
 
 const CreateProduct = (props) => {
 
@@ -113,7 +113,7 @@ const CreateProduct = (props) => {
 
         setProductVariantPrices([])
 
-        getCombn(tags).forEach(item => {
+        getCombn(tags).forEach((item,productPrice,productStock) => {
             setProductVariantPrices(productVariantPrice => [...productVariantPrice, {
                 title: item,
                 price: productPrice,
@@ -137,11 +137,28 @@ const CreateProduct = (props) => {
         return ans;
     }
 
+    const getCSRFToken = async () => {
+        const response = await axios.get('/getCSRFToken');
+        axios.defaults.headers.post['X-CSRF-Token'] = response.data.CSRFToken;
+        console.log(response);
+     };
+
     // Save product
-    let saveProduct = () => {
-        console.log("clicked");
-        // event.preventDefault();
+    let saveProduct = (event) => {
+        // console.log("clicked");
+        event.preventDefault();
         // TODO : write your code here to save the product
+        console.log({ pName: productName,pSku:productSku, pDesc : productDescription, pVariants: productVariants});
+        
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json;charset=UTF-8'},
+            body: JSON.stringify({ pName: productName,pSku:productSku, pDesc : productDescription, pVariants: productVariants})
+        };
+        // const url = window.location.href.replaceAll('create','createProduct')
+        console.log(window.location.href);
+        fetch(window.location.href, requestOptions)
+            .then(response => response.json());
        
     
     }
