@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {ChangeEvent,useState} from 'react';
 import TagsInput from 'react-tagsinput';
 import 'react-tagsinput/react-tagsinput.css';
 import Dropzone from 'react-dropzone'
@@ -7,6 +7,8 @@ import Dropzone from 'react-dropzone'
 const CreateProduct = (props) => {
 
     const [productVariantPrices, setProductVariantPrices] = useState([])
+    const [productPrice, setProductPrice] = useState(0)
+    const [productStock, setProductStock] = useState(0)
 
     const [productVariants, setProductVariant] = useState([
         {
@@ -14,6 +16,63 @@ const CreateProduct = (props) => {
             tags: []
         }
     ])
+    const [productName, setProductName] = useState("");
+    const [productSku, setProductSku] = useState("");
+    const [productDescription, setProductDescription] = useState("");
+    const [tag, setTag] = useState("");
+    const [variantType, setVariantType] = useState("");
+
+    const handleChangeVariantPrice = (e) => {
+        // 👇 Store the input value to local state
+        console.log(e.target.value);
+        productVariantPrices.push(e.target.value);
+        
+        
+      };
+      
+
+      const handleChangeVariantType = (e) => {
+        // 👇 Store the input value to local state
+        console.log(e.target.value);
+        setVariantType(e.target.value);
+        
+      };
+    
+  const handleChangeProductName = (e) => {
+    // 👇 Store the input value to local state
+    console.log(e.target.value);
+    setProductName(e.target.value);
+    
+  };
+
+  const handleChangeProductPrice = (e) => {
+    // 👇 Store the input value to local state
+    console.log(e.target.value);
+    setProductPrice(e.target.value);
+    
+  };
+
+  const handleChangeProductStock = (e) => {
+    // 👇 Store the input value to local state
+    console.log(e.target.value);
+    setProductStock(e.target.value);
+    
+  };
+
+  const handleChangeProductSku = (e) => {
+    // 👇 Store the input value to local state
+    console.log(e.target.value);
+    setProductSku(e.target.value);
+    
+  };
+
+  const handleChangeProductDescription = (e) => {
+    // 👇 Store the input value to local state
+    console.log(e.target.value);
+    setProductDescription(e.target.value);
+    
+  };
+
     console.log(typeof props.variants)
     // handle click event of the Add button
     const handleAddClick = () => {
@@ -26,6 +85,8 @@ const CreateProduct = (props) => {
         }])
     };
 
+    console.log(productVariants);
+    console.log(productVariantPrices);
     // handle input change on tag input
     const handleInputTagOnChange = (value, index) => {
         let product_variants = [...productVariants]
@@ -55,12 +116,14 @@ const CreateProduct = (props) => {
         getCombn(tags).forEach(item => {
             setProductVariantPrices(productVariantPrice => [...productVariantPrice, {
                 title: item,
-                price: 0,
-                stock: 0
+                price: productPrice,
+                stock: productStock
             }])
         })
 
     }
+
+    console.log(productVariants);
 
     // combination algorithm
     function getCombn(arr, pre) {
@@ -75,11 +138,13 @@ const CreateProduct = (props) => {
     }
 
     // Save product
-    let saveProduct = (event) => {
-        event.preventDefault();
+    let saveProduct = () => {
+        console.log("clicked");
+        // event.preventDefault();
         // TODO : write your code here to save the product
+       
+    
     }
-
 
     return (
         <div>
@@ -90,15 +155,15 @@ const CreateProduct = (props) => {
                             <div className="card-body">
                                 <div className="form-group">
                                     <label htmlFor="">Product Name</label>
-                                    <input type="text" placeholder="Product Name" className="form-control"/>
+                                    <input type="text" onChange={handleChangeProductName} placeholder="Product Name" className="form-control"/>
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="">Product SKU</label>
-                                    <input type="text" placeholder="Product Name" className="form-control"/>
+                                    <input type="text" onChange={handleChangeProductSku}  placeholder="Product Name" className="form-control"/>
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="">Description</label>
-                                    <textarea id="" cols="30" rows="4" className="form-control"></textarea>
+                                    <textarea id="" cols="30" onChange={handleChangeProductDescription} rows="4" className="form-control"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -201,8 +266,8 @@ const CreateProduct = (props) => {
                                                 return (
                                                     <tr key={index}>
                                                         <td>{productVariantPrice.title}</td>
-                                                        <td><input className="form-control" type="text"/></td>
-                                                        <td><input className="form-control" type="text"/></td>
+                                                        <td><input className="form-control" onChange={handleChangeProductPrice} type="text"/></td>
+                                                        <td><input className="form-control" onChange={handleChangeProductStock}  type="text"/></td>
                                                     </tr>
                                                 )
                                             })
